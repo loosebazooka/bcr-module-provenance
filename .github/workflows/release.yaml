@@ -42,6 +42,6 @@ jobs:
       uses: actions/attest-build-provenance@v1
       with:
         subject-path: |
-          ${ARCHIVE}
+          bcr-module-provenance-*.tar.gz
           source.json
           MODULE.bazel
