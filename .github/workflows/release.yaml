@@ -46,10 +46,31 @@ jobs:
           source.json
           MODULE.bazel
 
-    - name: Attest Build Provenance
-      uses: actions/attest-build-provenance@v1
+    - name: Attest Source Archive Provenance
+      id: attest_source_archive
+      uses: actions/attest-build-provenance@v2
       with:
-        subject-path: |
-          ${{ env.ARCHIVE }}
+        subject-path: ${{ env.ARCHIVE }}
+
+    - name: Attest source.json Provenance
+      id: attest_source_json
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: source.json
+
+    - name: Attest MODULE.bazel Provenance
+      id: attest_module_bazel
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: MODULE.bazel
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
           source.json
           MODULE.bazel
+          ${{ env.ARCHIVE }}
+          ${{ steps.attest_source_archive.outputs.bundle-path }}
+          ${{ steps.attest_source_json.outputs.bundle-path }}
+          ${{ steps.attest_module_bazel.outputs.bundle-path }}
