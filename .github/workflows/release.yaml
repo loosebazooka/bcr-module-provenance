@@ -81,4 +81,4 @@ jobs:
           ${{ env.ARCHIVE }}
           source.json.intoto.jsonl
           MODULE.bazel.intoto.jsonl
-          ${{ env.ARCHIVE }}.intoto.json
+          ${{ env.ARCHIVE }}.intoto.jsonl
