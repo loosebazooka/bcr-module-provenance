@@ -33,15 +33,27 @@ jobs:
         set -o errexit -o nounset -o pipefail
         git archive --format=tar --prefix=${PREFIX}/ ${TAG} | gzip > $ARCHIVE
 
-    - name: Create release archives
+    - name: Upload archive
+    - uses: actions/upload-artifact@v4
+      with:
+        path: ${{ env.ARCHIVE }}
+
+    - name: Create module metadata
       run: |
         echo "hello" > source.json
         echo "moose" > MODULE.bazel
+    
+    - name: Upload module metadata
+    - uses: actions/upload-artifact@v4
+      with:
+        path: |
+          source.json
+          MODULE.bazel
 
     - name: Attest Build Provenance
       uses: actions/attest-build-provenance@v1
       with:
         subject-path: |
-          bcr-module-provenance-*.tar.gz
+          ${{ env.ARCHIVE }}
           source.json
           MODULE.bazel
