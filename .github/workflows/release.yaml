@@ -34,7 +34,7 @@ jobs:
         git archive --format=tar --prefix=${PREFIX}/ ${TAG} | gzip > $ARCHIVE
 
     - name: Upload archive
-    - uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4
       with:
         path: ${{ env.ARCHIVE }}
 
@@ -44,7 +44,7 @@ jobs:
         echo "moose" > MODULE.bazel
     
     - name: Upload module metadata
-    - uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4
       with:
         path: |
           source.json
