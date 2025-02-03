@@ -1,1 +1,47 @@
-#asdf
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+
+jobs:
+  archive-and-attest:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - name: Set env
+      run: |
+        echo "TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+        echo "VERSION=${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
+        echo "ARCHIVE=bcr-module-provenance-${GITHUB_REF_NAME}" >> $GITHUB_ENV
+        echo "PREFIX=bcr-module-provenance-${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
+
+    # really this should all be coming from https://github.com/bazel-contrib/.github/blob/master/.github/workflows/release_ruleset.yaml
+    # but we just do this super janky here for this example
+    - name: Archive
+      run: |
+        set -o errexit -o nounset -o pipefail
+        git archive --format=tar --prefix=${PREFIX}/ ${TAG} | gzip > $ARCHIVE
+
+    - name: Create release archives
+      run: |
+        echo "hello" > source.json
+        echo "moose" > MODULE.bazel
+
+    - name: Attest Build Provenance
+      uses: actions/attest-build-provenance@v1
+      with:
+        subject-path: |
+          ${ARCHIVE}
+          source.json
+          MODULE.bazel
