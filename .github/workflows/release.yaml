@@ -48,17 +48,29 @@ jobs:
       with:
         subject-path: ${{ env.ARCHIVE }}
 
+    - name: Write Source Archive Provenance into intoto.jsonl
+      run: |
+        cat ${{ steps.attest_source_archive.outputs.bundle-path }} | jq -c > ${{ env.ARCHIVE }}.intoto.jsonl
+
     - name: Attest source.json Provenance
       id: attest_source_json
       uses: actions/attest-build-provenance@v2
       with:
         subject-path: source.json
+    
+    - name: Write source.json Provenance into intoto.jsonl
+      run: |
+        cat ${{ steps.attest_source_json.outputs.bundle-path }} | jq -c > source.json.intoto.jsonl
 
     - name: Attest MODULE.bazel Provenance
       id: attest_module_bazel
       uses: actions/attest-build-provenance@v2
       with:
         subject-path: MODULE.bazel
+
+    - name: Write source.json Provenance into intoto.jsonl
+      run: |
+        cat ${{ steps.attest_module_bazel.outputs.bundle-path }} | jq -c > MODULE.bazel.intoto.jsonl
 
     - name: Release
       uses: softprops/action-gh-release@v2
@@ -67,6 +79,6 @@ jobs:
           source.json
           MODULE.bazel
           ${{ env.ARCHIVE }}
-          ${{ steps.attest_source_archive.outputs.bundle-path }}
-          ${{ steps.attest_source_json.outputs.bundle-path }}
-          ${{ steps.attest_module_bazel.outputs.bundle-path }}
+          source.json.intoto.jsonl
+          MODULE.bazel.intoto.jsonl
+          ${{ env.ARCHIVE }}.intoto.json
