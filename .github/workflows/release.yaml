@@ -21,6 +21,8 @@ jobs:
         echo "VERSION=${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
         echo "ARCHIVE=bcr-module-provenance-${GITHUB_REF_NAME}" >> $GITHUB_ENV
         echo "PREFIX=bcr-module-provenance-${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
+        echo "REPO=${{ github.event.repository.name }}" >> $GITHUB_ENV
+        echo "ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
 
     # really this should all be coming from https://github.com/bazel-contrib/.github/blob/master/.github/workflows/release_ruleset.yaml
     # but we just do this super janky here for this example
@@ -28,11 +30,13 @@ jobs:
       run: |
         set -o errexit -o nounset -o pipefail
         git archive --format=tar --prefix=${PREFIX}/ ${TAG} | gzip > $ARCHIVE
+        echo "SHA_256=$(sha256sum $ARCHIVE" >> $GITHUB_ENV                                    
+        echo "SHA256=sha256-$(sha256sum $ARCHIVE | awk '{print $1}' | xxd -r -p | base64)" >> $GITHUB_ENV
 
     - name: Create module metadata
       run: |
-        echo "hello" > source.json
-        echo "moose" > MODULE.bazel
+        envsubst < source.json.template > source.json
+    # MODULE.bazel is already in root, so we don't need to copy it over in this example
     
     - name: Upload release stuff
       uses: actions/upload-artifact@v4

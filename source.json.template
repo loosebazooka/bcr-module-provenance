@@ -1,0 +1,5 @@
+{
+  "integrity": "${SHA_256}",
+  "strip_prefix": "${REPO}-${VERSION}",
+  "url": "https://github.com/${ORG}/${REPO}/releases/download/${TAG}/bcr-module-provenance-${TAG}.tar.gz"
+}
