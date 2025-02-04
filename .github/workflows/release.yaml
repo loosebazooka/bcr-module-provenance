@@ -91,5 +91,5 @@ jobs:
           source.json.intoto.jsonl
           MODULE.bazel.intoto.jsonl
           ${{ env.ARCHIVE }}.intoto.jsonl
-          attesations.json
+          attestations.json
           
