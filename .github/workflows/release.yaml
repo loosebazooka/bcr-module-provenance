@@ -54,6 +54,7 @@ jobs:
     - name: Write Source Archive Provenance into intoto.jsonl
       run: |
         cat ${{ steps.attest_source_archive.outputs.bundle-path }} | jq -c > ${{ env.ARCHIVE }}.intoto.jsonl
+        echo "ATT_SHA_256=sha256-$(sha256sum $ARCHIVE | awk '{print $1}' | xxd -r -p | base64)" >> $GITHUB_ENV
 
     - name: Attest source.json Provenance
       id: attest_source_json
@@ -64,6 +65,7 @@ jobs:
     - name: Write source.json Provenance into intoto.jsonl
       run: |
         cat ${{ steps.attest_source_json.outputs.bundle-path }} | jq -c > source.json.intoto.jsonl
+        echo "SOURCE_JSON_ATT_SHA_256=sha256-$(sha256sum source.json.intoto.jsonl | awk '{print $1}' | xxd -r -p | base64)" >> $GITHUB_ENV
 
     - name: Attest MODULE.bazel Provenance
       id: attest_module_bazel
@@ -74,6 +76,10 @@ jobs:
     - name: Write source.json Provenance into intoto.jsonl
       run: |
         cat ${{ steps.attest_module_bazel.outputs.bundle-path }} | jq -c > MODULE.bazel.intoto.jsonl
+        echo "MODULE_BAZEL_ATT_SHA_256=sha256-$(sha256sum MODULE.bazel.intoto.jsonl | awk '{print $1}' | xxd -r -p | base64)" >> $GITHUB_ENV
+
+    - name: Create attestations.json
+      run: envsubst < attestations.json.template > attestations.json
 
     - name: Release
       uses: softprops/action-gh-release@v2
@@ -85,3 +91,5 @@ jobs:
           source.json.intoto.jsonl
           MODULE.bazel.intoto.jsonl
           ${{ env.ARCHIVE }}.intoto.jsonl
+          attesations.json
+          
