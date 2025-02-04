@@ -1,0 +1,17 @@
+{
+  "types": ["https://slsa.dev/provenance/v1"]
+  "attestations" {
+    "source.json": {
+      "url": "https://github.com/${ORG}/${REPO}/releases/download/${TAG}/source.json.intoto.jsonl"
+      "integrity": "${SOURCE_JSON_ATT_SHA_256}
+    },
+    "MODULE.bazel": {
+      "url": "https://github.com/${ORG}/${REPO}/releases/download/${TAG}/MODULE.bazel.intoto.jsonl"
+      "integrity": "${MODULE_BAZEL_ATT_SHA_256}
+    },
+    "bcr-module-provenance-${TAG}.tar.gz.intoto.jsonl": {
+      "url": "https://github.com/${ORG}/${REPO}/releases/download/${TAG}/bcr-module-provenance-${TAG}.tar.gz.intoto.jsonl"
+      "integrity": "${ATT_SHA_256},
+    },
+  }
+}
