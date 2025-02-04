@@ -34,7 +34,7 @@ jobs:
 
     - name: Create module metadata
       run: |
-        envsubst < source.json.template > source.json
+        envsubst < .templates/source.json.template > source.json
     # MODULE.bazel is already in root, so we don't need to copy it over in this example
     
     - name: Upload release stuff
@@ -79,7 +79,7 @@ jobs:
         echo "MODULE_BAZEL_ATT_SHA_256=sha256-$(sha256sum MODULE.bazel.intoto.jsonl | awk '{print $1}' | xxd -r -p | base64)" >> $GITHUB_ENV
 
     - name: Create attestations.json
-      run: envsubst < attestations.json.template > attestations.json
+      run: envsubst < .templates/attestations.json.template > attestations.json
 
     - name: Release
       uses: softprops/action-gh-release@v2
