@@ -19,7 +19,7 @@ jobs:
       run: |
         echo "TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
         echo "VERSION=${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
-        echo "ARCHIVE=bcr-module-provenance-${GITHUB_REF_NAME}" >> $GITHUB_ENV
+        echo "ARCHIVE=bcr-module-provenance-${GITHUB_REF_NAME}.tar.gz" >> $GITHUB_ENV
         echo "PREFIX=bcr-module-provenance-${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
         echo "REPO=${{ github.event.repository.name }}" >> $GITHUB_ENV
         echo "ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
