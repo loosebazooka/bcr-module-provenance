@@ -30,8 +30,7 @@ jobs:
       run: |
         set -o errexit -o nounset -o pipefail
         git archive --format=tar --prefix=${PREFIX}/ ${TAG} | gzip > $ARCHIVE
-        echo "SHA_256=$(sha256sum $ARCHIVE" >> $GITHUB_ENV                                    
-        echo "SHA256=sha256-$(sha256sum $ARCHIVE | awk '{print $1}' | xxd -r -p | base64)" >> $GITHUB_ENV
+        echo "SHA_256=sha256-$(sha256sum $ARCHIVE | awk '{print $1}' | xxd -r -p | base64)" >> $GITHUB_ENV
 
     - name: Create module metadata
       run: |
