@@ -40,6 +40,7 @@ jobs:
       uses: actions/checkout@v4.2.2
       with:
         repository: ${{ env.BCR }}
+        token: ${{ secrets.loosebazooka-bcr-writer }}
       
     - name: Read release Info
       env:
