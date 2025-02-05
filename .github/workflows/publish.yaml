@@ -41,7 +41,12 @@ jobs:
         echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
         echo "BCR=${{ github.event.inputs.bcr }}" >> $GITHUB_ENV
 
-    - name: Checkout
+    - name: Checkout this repo
+      uses: actions/checkout@v4.2.2
+      with:
+        path: '/tmp/this-repo'
+
+    - name: Checkout BCR
       uses: actions/checkout@v4.2.2
       with:
         repository: ${{ env.BCR }}
@@ -60,7 +65,7 @@ jobs:
         cd modules/${REPO}
         
         if [ ! -f ./metadata.json ]; then
-          envsubst < .templates/metadata.json.template > metadata.json
+          envsubst < /tmp/this-repo/.templates/metadata.json.template > metadata.json
         fi
         
         jq --arg VERSION $VERSION '.versions += [$VERSION]' metadata.json > metadata.json.new; mv metadata.json.new metadata.json
