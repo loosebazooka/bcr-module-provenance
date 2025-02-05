@@ -22,6 +22,11 @@ on:
         description: 'to use for git commits'
         required: true
         default: 'Appu Goundan'
+      github_name:
+        description: 'owner of module'
+        required: true
+        default: 'loosebazooka'
+        
 
 jobs:
   generate:
@@ -33,7 +38,7 @@ jobs:
       run: |
         echo "TAG=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
         echo "REPO=${{ github.event.repository.name }}" >> $GITHUB_ENV
-        echo "ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
+        echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
         echo "BCR=${{ github.event.inputs.bcr }}" >> $GITHUB_ENV
 
     - name: Checkout
@@ -47,11 +52,17 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         GIT_EMAIL: ${{ github.event.inputs.git_email }}
         GIT_NAME: ${{ github.event.inputs.git_name }}
+        GITHUB_NAME: ${{ github.event.inputs.github_name }}
       run: |
         set -o errexit -o nounset -o pipefail -o xtrace
         export VERSION=${TAG:1}
         mkdir -p modules/${REPO}/${VERSION}
         cd modules/${REPO}
+        
+        if [ ! -f ./metadata.json ]; then
+          envsubst < .templates/metadata.json.template > metadata.json
+        fi
+        
         jq --arg VERSION $VERSION '.versions += [$VERSION]' metadata.json > metadata.json.new; mv metadata.json.new metadata.json
         gh release view $TAG -R $ORG/$REPO --json assets --jq '.assets.[].url' | grep -v .intoto.jsonl | grep -v .tar.gz | xargs wget -q
         export BRANCH=add_${REPO}_${VERSION}_$(date +%s)
