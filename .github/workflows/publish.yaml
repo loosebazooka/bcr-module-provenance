@@ -81,5 +81,6 @@ jobs:
         git config --global user.name "${GIT_NAME}"
         
         git checkout -b $BRANCH
-        git commit -a -m "add $VERSION for $REPO"
+        git add .
+        git commit -m "add $VERSION for $REPO"
         git push origin $BRANCH
