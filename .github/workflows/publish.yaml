@@ -44,13 +44,14 @@ jobs:
     - name: Checkout this repo
       uses: actions/checkout@v4.2.2
       with:
-        path: '/tmp/this-repo'
+        path: 'this'
 
     - name: Checkout BCR
       uses: actions/checkout@v4.2.2
       with:
         repository: ${{ env.BCR }}
         token: ${{ secrets.BCR_FORK_WRITE_TOKEN }}
+        path: 'bcr'
       
     - name: Read release Info
       env:
@@ -58,14 +59,16 @@ jobs:
         GIT_EMAIL: ${{ github.event.inputs.git_email }}
         GIT_NAME: ${{ github.event.inputs.git_name }}
         GITHUB_NAME: ${{ github.event.inputs.github_name }}
+        HOME: ${{ github.workspace }}
       run: |
         set -o errexit -o nounset -o pipefail -o xtrace
         export VERSION=${TAG:1}
+        cd bcr
         mkdir -p modules/${REPO}/${VERSION}
         cd modules/${REPO}
         
         if [ ! -f ./metadata.json ]; then
-          envsubst < /tmp/this-repo/.templates/metadata.json.template > metadata.json
+          envsubst < $HOME/this/.templates/metadata.json.template > metadata.json
         fi
         
         jq --arg VERSION $VERSION '.versions += [$VERSION]' metadata.json > metadata.json.new; mv metadata.json.new metadata.json
