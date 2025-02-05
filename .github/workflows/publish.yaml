@@ -72,8 +72,10 @@ jobs:
         fi
         
         jq --arg VERSION $VERSION '.versions += [$VERSION]' metadata.json > metadata.json.new; mv metadata.json.new metadata.json
-        gh release view $TAG -R $ORG/$REPO --json assets --jq '.assets.[].url' | grep -v .intoto.jsonl | grep -v .tar.gz | xargs wget -q
+        gh release view $TAG -R $OWNER/$REPO --json assets --jq '.assets.[].url' | grep -v .intoto.jsonl | grep -v .tar.gz | xargs wget -q
         export BRANCH=add_${REPO}_${VERSION}_$(date +%s)
+
+        git status
         
         git config --global user.email "${GIT_EMAIL}"
         git config --global user.name "${GIT_NAME}"
