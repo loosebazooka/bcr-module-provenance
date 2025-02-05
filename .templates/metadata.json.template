@@ -1,0 +1,15 @@
+{
+  "homepage": "https://github.com/${OWNER}/${REPO}",
+  "maintainers": [
+    {
+      "email": "${GIT_EMAIL}",
+      "github": "${GITHUB_NAME}",
+      "name": "${GIT_NAME}"
+    }
+  ],
+  "repository": [
+    "github:${OWNER}/${REPO}"
+  ],
+  "versions": [],
+  "yanked_versions": {}
+}
